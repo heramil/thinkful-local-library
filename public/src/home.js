@@ -44,15 +44,20 @@ function getMostPopularBooks(books) {
 };
 
 function getMostPopularAuthors(books, authors) {
-  let popularAuthors = books.map((book) => {
-  const author = authors.find((author) => author.id === book.authorId)
-  return {
-    name: `${author.name.first} ${author.name.last}`,
-    count: book.borrows.length
-  }
-});
-  popularAuthors = _sortAndSlice(popularAuthors)
-  return popularAuthors
+  const popularAuthors = authors.map(author => {
+    const authorName = `${author.name.first} ${author.name.last}`;
+    const booksBy = books.filter(book => book.authorId === author.id);
+    const borrows = booksBy.reduce((total, book) => total + book.borrows.length, 0);
+
+    const authorInfo = {
+      name: authorName,
+      count: borrows,
+    };
+    return authorInfo;
+   })
+   popularAuthors.sort((authA, authB) => authB.count - authA.count);
+   popularAuthors.splice(5);
+   return popularAuthors;
 };
 
 module.exports = {
